@@ -1,5 +1,6 @@
 import discord
 import asyncio
+import os
 from discord.http import Route
 
 app = discord.Client()
@@ -170,6 +171,6 @@ async def on_socket_response(payload):
 
 		return
 
-token = open("token.txt", "r").readline()
+#token = open("token.txt", "r").readline()
 
 app.run(os.environ['token'])
