@@ -170,4 +170,6 @@ async def on_socket_response(payload):
 
 		return
 
-app.run("ODk5NjQyNjc0OTQ3MTg2NzA5.YW1viA.Unbmk0-7Ofi7kE8o_CtT67w26lA")
+token = open("token", "r").readline()
+
+app.run(token)
