@@ -172,4 +172,4 @@ async def on_socket_response(payload):
 
 token = open("token.txt", "r").readline()
 
-app.run(token)
+app.run(os.environ['token'])
