@@ -76,8 +76,6 @@ async def on_message(message):
 
 	if content.startswith("!상태창생성"):
 		splited = content.split()
-		#title_concat = splited[1]
-		#embed = discord.Embed(title=title_concat)
 		"""built_component = []
 		first_row_component = []
 		for member in member_list:
@@ -103,14 +101,18 @@ async def on_message(message):
 		r = Route('POST', '/channels/{channel_id}/messages', channel_id=channel.id)
 
 		next_current = 0
+		page_num = 1
 		while True:
 			built_component, next_current, overflow = build_onelist(next_current)
+			title_concat = splited[1] + str(page_num)
+			page_num = page_num + 1
+			embed = discord.Embed(title=title_concat)
 			payload = {
-				#"embed": embed.to_dict(),
+				"embed": embed.to_dict(),
 				"components": built_component
 			}
-
-			await http.request(r, json=payload)
+			if len(built_component) != 1:
+				await http.request(r, json=payload)
 
 			if overflow == False:
 				break
@@ -127,7 +129,7 @@ async def on_socket_response(payload):
 
 		splited_custom_id = custom_id.split()
 		if len(splited_custom_id) == 1:
-			#before_embeds = message["embeds"]
+			before_embeds = message["embeds"]
 			before_components = message["components"]
 
 			if custom_id == "초기화":
@@ -159,7 +161,7 @@ async def on_socket_response(payload):
 					index2 = index2 + 1
 
 			after_contents = {
-				#"embeds": before_embeds,
+				"embeds": before_embeds,
 				"components": before_components
 			}
 
@@ -182,7 +184,7 @@ async def on_socket_response(payload):
 			human = splited_custom_id[2]
 			job = splited_custom_id[3]
 
-			#before_embeds = message["embeds"]
+			before_embeds = message["embeds"]
 			before_components = message["components"]
 
 			if job != 'X':
@@ -206,7 +208,7 @@ async def on_socket_response(payload):
 					index2 = index2 + 1
 
 			after_contents = {
-				#"embeds": before_embeds,
+				"embeds": before_embeds,
 				"components": before_components
 			}
 
