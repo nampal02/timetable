@@ -28,6 +28,38 @@ team_list = [
 ["알고", "바드", "스카", "데헌", "소서"]
 ]
 
+def build_onelist(index):
+	built_component = []
+	first_row_component = []
+	for member in member_list:
+		customId = member
+		first_row_component.append({"type": 2, "label": member, "style": 2, "custom_id": customId})
+	built_component.append({"type":1, "components": first_row_component})
+
+	current = index
+	for team in team_list[current:]:
+		member_components = []
+
+		region_name = team[0]
+		z = 0
+		for member in team:
+			customId = str(current) + " " + region_name + " " + member_list[z] + " " + member
+			if z == 0:
+				customId = current
+			z = z + 1
+			member_components.append({"type": 2, "label": member, "style": 2, "custom_id": customId})
+			built_component.append({"type": 1, "components": member_components})
+
+			current = current + 1
+	
+		offset = current - index
+		if offset == 4:
+			overflow = True
+			return built_component, current, overflow
+
+	overflow = False
+	return built_component, current, overflow
+
 @app.event
 async def on_ready():
 	print("일정 관리 봇 시작합니다.")
@@ -45,7 +77,7 @@ async def on_message(message):
 		splited = content.split()
 		title_concat = splited[1] + " " + splited[2]
 		embed = discord.Embed(title=title_concat)
-		built_component = []
+		"""built_component = []
 		first_row_component = []
 		for member in member_list:
 			customId = member
@@ -57,9 +89,6 @@ async def on_message(message):
 		for team in team_list:
 			member_components = []
 
-			if team[0] != splited[2]:
-				continue
-
 			z = 0
 			for member in team:
 				customId = str(team_index) +" "+ splited[2] + " " + member_list[z] + " " + member
@@ -69,52 +98,28 @@ async def on_message(message):
 				member_components.append({"type": 2, "label": member, "style": 2, "custom_id": customId})
 			built_component.append({"type": 1, "components": member_components})
 
-			team_index = team_index + 1
-
+			team_index = team_index + 1"""
 		r = Route('POST', '/channels/{channel_id}/messages', channel_id=channel.id)
+
+		while True:
+			built_component, next_current, overflow = build_onelist(0)
+			payload = {
+				"embed": embed.to_dict(),
+				"components": built_component
+			}
+
+			await http.request(r, json=payload)
+
+			if overflow == False:
+				break
+
+		
 		#print(built_component)
-		payload = {
-			"embed": embed.to_dict(),
-			"components": built_component
-		}
+		
 
 		await http.request(r, json=payload)
 		return
 
-"""@app.event
-async def on_message(message):
-	content = message.content
-	guild = message.guild
-	author = message.author
-	channel = message.channel
-
-	if message.author.bot:
-		return None
-	if content.startswith("!상태창생성"):
-		splited = content.split()
-		title_spaced = splited[1] + "                                          "
-		embed = discord.Embed(title=title_spaced)
-
-		out = []
-		for member in member_list:
-			out.append("")
-
-		
-		for team in team_list:
-			i = 0
-			for member in team:
-				out[i] += "{}\n".format(member)
-				i = i +1
-
-		j = 0
-		for member in member_list:
-			embed.add_field(name=member, value=out[j], inline=True)
-			j = j + 1
-
-		await channel.send(embed=embed)
-	if content.startswith("!Test"):
-		await channel.send(temp)
-"""
 @app.event
 async def on_socket_response(payload):
 	if payload.get("t", "") == "INTERACTION_CREATE" and payload.get("d",{}).get("type") == 3:
