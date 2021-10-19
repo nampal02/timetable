@@ -76,7 +76,7 @@ async def on_message(message):
 
 	if content.startswith("!상태창생성"):
 		splited = content.split()
-		title_concat = splited[1]
+		#title_concat = splited[1]
 		#embed = discord.Embed(title=title_concat)
 		"""built_component = []
 		first_row_component = []
